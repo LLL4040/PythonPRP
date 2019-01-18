@@ -13,6 +13,17 @@
         <script src="static/js/jquery.min.js"></script>
         <script src="static/js/bootstrap.min.js"></script>
         <script src="static/js/func.js"></script>
+        <script type="text/javascript">
+            function changeDstSum(){ 
+                var num = document.getElementById('Num').value;
+                if(num >= 0){
+                    alert('修改成功');
+                    x = num;
+                }else{
+                    alert('修改失败');
+                }
+            }
+        </script>
 
         {% block css %} {% endblock %}
 
@@ -35,19 +46,19 @@
             <!-- 左侧菜单栏目块 -->
             <div class="leftMeun" id="leftMeun" style="width:200px; height:100%;">
 
-                <div id="logoDiv">
+                <div id="logoDiv" align="center">
                     <p id="logoP"><img class="img-fluid" src="static/images/jdlogo.png" width="96%"></p>
                 </div>
 
                 <div id="personInfor">
-                    <p style="font-size:15px;">
-                        <a href="login"><i>JAccount统一身份登录</i></a>
+                    <p style="font-size:14px;" align="center">
+                        <a href="login">JAccount统一身份登录</a>
                     </p>
                 </div>
 
-                <div class="meun-item" href="#settings" aria-conteols="settings" role="tab" data-toggle="tab"><img src="static/images/icon_rule_grey.png">条件配置</div>
+                <div class="meun-item" href="#settings" align="center" aria-conteols="settings" role="tab" data-toggle="tab"><img src="static/images/icon_rule_grey.png">条件配置</div>
 
-                <div class="meun-item" href="#results" aria-conteols="results" role="tab" data-toggle="tab"><img src="static/images/icon_card_grey.png">审核结果</div>
+                <div class="meun-item" href="#results" align="center" aria-conteols="results" role="tab" data-toggle="tab"><img src="static/images/icon_card_grey.png">审核结果</div>
             </div>
 
             <!-- 右侧具体内容栏目 -->

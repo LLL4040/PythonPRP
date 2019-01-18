@@ -24,3 +24,13 @@ class UserLogin(forms.Form):
     username = forms.CharField(label='用户名', max_length=100)
     password = forms.CharField(label='密码', widget=forms.PasswordInput())
     icode = forms.CharField(label='验证码', max_length=10)
+
+class CrossNumber(forms.Form):
+    num = forms.IntegerField(label='跨方向门数')
+
+class ExtraClass(forms.Form):
+    ID = forms.CharField(label='课程代码', max_length=10)
+    Name = forms.CharField(label='课程名称', max_length=100)
+    Credit = forms.IntegerField(label='学分')
+        
+        

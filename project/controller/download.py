@@ -37,7 +37,7 @@ def download(data_list):#通过数据对本地的Excel文件进行更改
         list_of_one += [i.others['SE113']]
         list_of_one += [i.others['SE232']]
         list_show += [list_of_one]
-    print list_show
+    #print list_show
     #向单元格写入数据
     row = len(data_list) + 1
     column = 22  #列数

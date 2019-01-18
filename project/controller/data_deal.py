@@ -22,16 +22,17 @@ def data_deal(list1):#list1是从spider.py接受到的原始数据
             d = student.d_group.replace("\xc2\xa0", " ").split(',')
             tmp = [a,b,c,d]
             for group in tmp:
-                if group[2] == ' ':
-                    group[2] = 0
-                if int(group[2]) + int(group[3]) >= int(group[1]):
-                    student.one_direction = group[0]
-                elif int(group[2]) + int(group[3]) >= 6:
-                    student.another_direction = group[0]
+                if len(group) > 2:
+                    if group[2] == ' ':
+                        group[2] = 0
+                    if int(group[2]) + int(group[3]) >= int(group[1]):
+                        student.one_direction = group[0]
+                    elif int(group[2]) + int(group[3]) >= 6:
+                        student.another_direction = group[0]
 
             list2.append(student)
 
-    get_and_post.add(list2)#储存数据
+    #get_and_post.add(list2)#储存数据
     download(list2)
     return list2
 

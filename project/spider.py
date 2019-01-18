@@ -55,6 +55,9 @@ class data2(data1):#返回给manager的数据实例
                     if 'F' in i[2]:
                         tmp[j] = '未通过'
                         break
+                    if '\xe2\x96\xb3' in i[2]:
+                        tmp[j] = '未通过'
+                        break
                     if int(float(i[2])) >= 60:
                         tmp[j] = '通过'
                     else:
@@ -82,7 +85,7 @@ def data_deal(list_origin):
 
         #data_dealing = data.find(attrs={"id":""})#毕业时间
         #graduate_time = data_dealing.string
-        graduate_time = '2018-06-30'
+        graduate_time = '2019-06-30'
 
         data_dealing = data.find(attrs={"id":"lbXjzt"})#学籍状态
         student_status = data_dealing.string
@@ -107,7 +110,7 @@ def data_deal(list_origin):
         data_dealing = data.find(attrs={"id":"dgXX1"})#限选模块
         courses = data_dealing.findAll(attrs={"class":"dgItemStyle"})
         courses += data_dealing.findAll(attrs={"class":"dgAItemStyle"})
-        a_group = ''
+        '''a_group = ''
         str_tmp1 = str(courses[0])[str(courses[0]).index('<td>')+4:]
         a_group = a_group + str_tmp1[:str_tmp1.index('</td>')]+','
         str_tmp1 = str_tmp1[str_tmp1.index('<td>')+4:]
@@ -172,7 +175,42 @@ def data_deal(list_origin):
         str_tmp3 = str_tmp2[str_tmp2.index('<td>')+4:]
         enterprise_education_courses = enterprise_education_courses + str_tmp3[:str_tmp3.index('</td>')]+','
         str_tmp4 = str_tmp3[str_tmp3.index('<td>')+4:]
-        enterprise_education_courses = enterprise_education_courses + str_tmp4[:str_tmp4.index('</td>')]
+        enterprise_education_courses = enterprise_education_courses + str_tmp4[:str_tmp4.index('</td>')]'''
+        a_group = ''
+        str_tmp1 = str(courses[0])[str(courses[0]).index('<td>')+4:]
+        a_group = a_group + str_tmp1[:str_tmp1.index('</td>')]+','
+        str_tmp1 = str_tmp1[str_tmp1.index('<td>')+4:]
+        str_tmp2 = str_tmp1[str_tmp1.index('<td>')+4:]
+        a_group = a_group + str_tmp2[:str_tmp2.index('</td>')]+','
+        str_tmp3 = str_tmp2[str_tmp2.index('<td>')+4:]
+        a_group = a_group + str_tmp3[:str_tmp3.index('</td>')]+','
+        str_tmp4 = str_tmp3[str_tmp3.index('<td>')+4:]
+        a_group = a_group + str_tmp4[:str_tmp4.index('</td>')]
+        
+        c_group = ''
+        str_tmp1 = str(courses[1])[str(courses[1]).index('<td>')+4:]
+        c_group = c_group + str_tmp1[:str_tmp1.index('</td>')]+','
+        str_tmp1 = str_tmp1[str_tmp1.index('<td>')+4:]
+        str_tmp2 = str_tmp1[str_tmp1.index('<td>')+4:]
+        c_group = c_group + str_tmp2[:str_tmp2.index('</td>')]+','
+        str_tmp3 = str_tmp2[str_tmp2.index('<td>')+4:]
+        c_group = c_group + str_tmp3[:str_tmp3.index('</td>')]+','
+        str_tmp4 = str_tmp3[str_tmp3.index('<td>')+4:]
+        c_group = c_group + str_tmp4[:str_tmp4.index('</td>')]
+
+        b_group = ''
+        str_tmp1 = str(courses[2])[str(courses[2]).index('<td>')+4:]
+        b_group = b_group + str_tmp1[:str_tmp1.index('</td>')]+','
+        str_tmp1 = str_tmp1[str_tmp1.index('<td>')+4:]
+        str_tmp2 = str_tmp1[str_tmp1.index('<td>')+4:]
+        b_group = b_group + str_tmp2[:str_tmp2.index('</td>')]+','
+        str_tmp3 = str_tmp2[str_tmp2.index('<td>')+4:]
+        b_group = b_group + str_tmp3[:str_tmp3.index('</td>')]+','
+        str_tmp4 = str_tmp3[str_tmp3.index('<td>')+4:]
+        b_group = b_group + str_tmp4[:str_tmp4.index('</td>')]
+
+        d_group = enterprise_education_courses = professional_elective_courses = ''
+
 
         data_dealing = data.find(attrs={"id":"dgTsk1"})#人文、社科、自然
         courses = data_dealing.findAll(attrs={"class":"dgItemStyle"})
@@ -184,7 +222,7 @@ def data_deal(list_origin):
                 general_courses = general_courses
             else:
                 course_tmp1 = course_tmp[course_tmp.index('<td>')+4:]
-                name = course_tmp1[:course_tmp1.index('</td>')]
+                c_name = course_tmp1[:course_tmp1.index('</td>')]
                 course_tmp2 = course_tmp1[course_tmp1.index('<td>')+4:]
                 number_ask = float(course_tmp2[:course_tmp2.index('</td>')])
                 course_tmp3 = course_tmp2[course_tmp2.index('<td>')+4:]
@@ -192,7 +230,7 @@ def data_deal(list_origin):
                 number_get = float(course_tmp3[:course_tmp3.index('</td>')])
                 if number_ask > number_get :
                     number_lack = number_ask - number_get
-                    general_courses =general_courses + '、' + name + '缺' + str(number_lack)
+                    general_courses =general_courses + '、' + c_name + '缺' + str(number_lack)
 
         data_dealing = data.find(attrs={"id":"lbCS1"})#计算机
         number_ask = int(data_dealing.string)
@@ -249,6 +287,19 @@ def data_deal(list_origin):
             one = one + ',' + course[find_n_sub_str(course,'>',11,0)+1:find_n_sub_str(course,'</td>',5,0)]
             one = one + ';'
             others = others + one
+        data_dealing = data.find(attrs={"id":"dgBX1"})#必修的选修课
+        courses = data_dealing.findAll(attrs={"class":"dgItemStyle"})
+        courses += data_dealing.findAll(attrs={"class":"dgAItemStyle"})
+        #print courses
+        for course in courses:
+            course = str(course)
+            one = ''
+            one = one + course[course.index('<td>')+4:course.index('</td>')]
+            one = one + ',' + course[find_n_sub_str(course,'<td>',1,0)+4:find_n_sub_str(course,'</td>',1,0)]
+            one = one + ',' + course[find_n_sub_str(course,'>',11,0)+1:find_n_sub_str(course,'</td>',5,0)]
+            one = one + ';'
+            others = others + one
+
         data_class = data1(student_ID, name, department, major, grade, graduate_time, student_status,
                      failed_number, center_credits, courses_must_to_take, a_group, b_group, c_group, d_group,
                      professional_elective_courses, enterprise_education_courses, general_courses, others)
@@ -270,14 +321,14 @@ def get_data(driver, user, password, icode):
     driver.find_element_by_id("pass").send_keys(password)
     driver.find_element_by_id("captcha").send_keys(icode)
     driver.find_element_by_id("form-input").submit()
-    time.sleep(5)
+    time.sleep(3)
     academy = driver.find_element_by_xpath("//*[@id='ddlYX']")
     Select(academy).select_by_value("03000")
-    time.sleep(2)
+    time.sleep(1)
     major = driver.find_element_by_xpath("//*[@id='ddlZY']")
     Select(major).select_by_value("0806050037")
     state = driver.find_element_by_xpath("//*[@id='ddlSHStatus']")
-    Select(state).select_by_value("1")
+    Select(state).select_by_value("0")
     select_all = driver.find_element_by_xpath("//*[@id='ddlFY']")
     Select(select_all).select_by_value("1")
 

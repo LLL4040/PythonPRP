@@ -40,7 +40,7 @@ body {
 	background: #4d5e70 bottom;
 }
 .leftMeun >div {
-	padding-left: 20px;
+	padding-left: 0px;
 }
 #rightContent {
 	/*position: absolute;*/
@@ -59,10 +59,10 @@ body {
 /*左侧菜单栏*/
 
 #logoDiv {
-	padding-top: 20px;
+	padding-top: 10px;
 	padding-bottom: 20px;
 	height: 70px;
-	background-color: #354457;
+	background-color: #fff;
 	font-size: 17px;
 	color: #fff;
 	vertical-align: bottom;
@@ -75,15 +75,15 @@ body {
 	vertical-align: bottom;
 }
 #personInfor {
-	padding: 10px 5px 10px;
+	padding: 10px 5px 1px;
 	margin: 0 5px;
 	color: #b3bcc5;
 	border-bottom: 1px solid #354457;
 	overflow-x: hidden;
-	padding-left: 20px;
+	padding-left: 0px;
 }
 #personInfor p {
-	font-size: 12px;
+	font-size: 14px;
 	margin-left: -5px;
 }
 #personInfor a {
