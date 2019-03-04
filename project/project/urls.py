@@ -23,4 +23,5 @@ urlpatterns = [
     url(r'^index$', index),
     url(r'^login$', login),
     url(r'^download$', manager.download_model),
+    url(r'^extra$', extra),
 ]

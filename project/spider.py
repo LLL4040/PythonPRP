@@ -1,4 +1,5 @@
 # -*- coding: utf-8 -*-
+import os
 from selenium import webdriver
 from selenium.webdriver.common.action_chains import ActionChains
 from selenium.webdriver.support.select import Select
@@ -41,30 +42,32 @@ class data2(data1):#返回给manager的数据实例
         self.one_direction = one_direction#修读完某一方向
         self.another_direction = another_direction#再修读其他方向x门（x可设置）
     def change(self):
-        se112 = se418 = se419 = se420 = se422 = se114 = se113 = se232 = '未选课'
-        tmp = {'SE112':se112, 'SE418':se418, 'SE419':se419, 'SE420':se420, 'SE422':se422, 'SE114':se114, 'SE113':se113, 'SE232':se232}
-        tmplist1 = ['SE112', 'SE418', 'SE419', 'SE420', 'SE422', 'SE114', 'SE113', 'SE232']
+        se112 = se418 = se419 = se420 = se422 = se417 = se315 = ei901 = '未选课'
+        tmp = {'SE112':se112, 'SE418':se418, 'SE419':se419, 'SE420':se420, 'SE422':se422, 'SE417':se417, 'SE315':se315, 'EI901':ei901}
+        tmplist1 = ['SE112', 'SE418', 'SE419', 'SE420', 'SE422', 'SE417', 'SE315', 'EI901']
         tmplist2 = self.others.split(';')
         for i in tmplist2:
             i = i.split(',')
             for j in tmplist1:
                 if j in i[0]:
                     if 'P' in i[2]:
-                        tmp[j] = '通过'
+                        tmp[j] = u'通过'
                         break
                     if 'F' in i[2]:
-                        tmp[j] = '未通过'
+                        tmp[j] = u'未通过'
                         break
-                    if '\xe2\x96\xb3' in i[2]:
-                        tmp[j] = '未通过'
+                    if '△' in i[2]:
+                        if tmp[j] == u'通过':
+                            break
+                        tmp[j] = u'未通过'
                         break
                     if int(float(i[2])) >= 60:
-                        tmp[j] = '通过'
+                        tmp[j] = u'通过'
                     else:
-                        tmp[j] = '未通过'
+                        tmp[j] = u'未通过'
         self.others = tmp
 
-def data_deal(list_origin):
+def data_deal(list_origin,graduate_time):
     list_dealing = []
     for data in list_origin:
         data_dealing = data.find(attrs={"id":"lbXH"})#学号
@@ -83,15 +86,20 @@ def data_deal(list_origin):
         data_dealing = data.find(attrs={"id":"lbNj"})#年级
         grade = int(data_dealing.string)
 
-        #data_dealing = data.find(attrs={"id":""})#毕业时间
-        #graduate_time = data_dealing.string
-        graduate_time = '2019-06-30'
-
         data_dealing = data.find(attrs={"id":"lbXjzt"})#学籍状态
         student_status = data_dealing.string
 
-        data_dealing = data.find(attrs={"id":"dgBX1"})#不及格门数
-        failed_number = int(str(data_dealing).count('需要重修或补考，务必关注！'))
+        data_dealing = str(data.find(attrs={"id":"dgBX1"})).decode('utf-8')#不及格门数
+        failed_data_list = data_dealing.split('tr')
+        failed_data = []
+        for i in failed_data_list:
+            if '需要重修或补考，务必关注！' in i:
+                failed_data += [i] 
+        failed_number = ''
+        for j in failed_data:
+            failed_list = j.split('td')
+            failed_number = failed_number + '、' + failed_list[3][1:-2]
+        failed_number = failed_number[1:]
 
         data_dealing = data.find(attrs={"id":"lbBxxf2"})#目前修读核心课程学分
         center_credits = int(data_dealing.string)
@@ -110,72 +118,6 @@ def data_deal(list_origin):
         data_dealing = data.find(attrs={"id":"dgXX1"})#限选模块
         courses = data_dealing.findAll(attrs={"class":"dgItemStyle"})
         courses += data_dealing.findAll(attrs={"class":"dgAItemStyle"})
-        '''a_group = ''
-        str_tmp1 = str(courses[0])[str(courses[0]).index('<td>')+4:]
-        a_group = a_group + str_tmp1[:str_tmp1.index('</td>')]+','
-        str_tmp1 = str_tmp1[str_tmp1.index('<td>')+4:]
-        str_tmp2 = str_tmp1[str_tmp1.index('<td>')+4:]
-        a_group = a_group + str_tmp2[:str_tmp2.index('</td>')]+','
-        str_tmp3 = str_tmp2[str_tmp2.index('<td>')+4:]
-        a_group = a_group + str_tmp3[:str_tmp3.index('</td>')]+','
-        str_tmp4 = str_tmp3[str_tmp3.index('<td>')+4:]
-        a_group = a_group + str_tmp4[:str_tmp4.index('</td>')]
-        
-        c_group = ''
-        str_tmp1 = str(courses[1])[str(courses[1]).index('<td>')+4:]
-        c_group = c_group + str_tmp1[:str_tmp1.index('</td>')]+','
-        str_tmp1 = str_tmp1[str_tmp1.index('<td>')+4:]
-        str_tmp2 = str_tmp1[str_tmp1.index('<td>')+4:]
-        c_group = c_group + str_tmp2[:str_tmp2.index('</td>')]+','
-        str_tmp3 = str_tmp2[str_tmp2.index('<td>')+4:]
-        c_group = c_group + str_tmp3[:str_tmp3.index('</td>')]+','
-        str_tmp4 = str_tmp3[str_tmp3.index('<td>')+4:]
-        c_group = c_group + str_tmp4[:str_tmp4.index('</td>')]
-        
-        professional_elective_courses = ''
-        str_tmp1 = str(courses[2])[str(courses[2]).index('<td>')+4:]
-        professional_elective_courses = professional_elective_courses + str_tmp1[:str_tmp1.index('</td>')]+','
-        str_tmp1 = str_tmp1[str_tmp1.index('<td>')+4:]
-        str_tmp2 = str_tmp1[str_tmp1.index('<td>')+4:]
-        professional_elective_courses = professional_elective_courses + str_tmp2[:str_tmp2.index('</td>')]+','
-        str_tmp3 = str_tmp2[str_tmp2.index('<td>')+4:]
-        professional_elective_courses = professional_elective_courses + str_tmp3[:str_tmp3.index('</td>')]+','
-        str_tmp4 = str_tmp3[str_tmp3.index('<td>')+4:]
-        professional_elective_courses = professional_elective_courses + str_tmp4[:str_tmp4.index('</td>')]
-
-        b_group = ''
-        str_tmp1 = str(courses[3])[str(courses[3]).index('<td>')+4:]
-        b_group = b_group + str_tmp1[:str_tmp1.index('</td>')]+','
-        str_tmp1 = str_tmp1[str_tmp1.index('<td>')+4:]
-        str_tmp2 = str_tmp1[str_tmp1.index('<td>')+4:]
-        b_group = b_group + str_tmp2[:str_tmp2.index('</td>')]+','
-        str_tmp3 = str_tmp2[str_tmp2.index('<td>')+4:]
-        b_group = b_group + str_tmp3[:str_tmp3.index('</td>')]+','
-        str_tmp4 = str_tmp3[str_tmp3.index('<td>')+4:]
-        b_group = b_group + str_tmp4[:str_tmp4.index('</td>')]
-
-        d_group = ''
-        str_tmp1 = str(courses[4])[str(courses[4]).index('<td>')+4:]
-        d_group = d_group + str_tmp1[:str_tmp1.index('</td>')]+','
-        str_tmp1 = str_tmp1[str_tmp1.index('<td>')+4:]
-        str_tmp2 = str_tmp1[str_tmp1.index('<td>')+4:]
-        d_group = d_group + str_tmp2[:str_tmp2.index('</td>')]+','
-        str_tmp3 = str_tmp2[str_tmp2.index('<td>')+4:]
-        d_group = d_group + str_tmp3[:str_tmp3.index('</td>')]+','
-        str_tmp4 = str_tmp3[str_tmp3.index('<td>')+4:]
-        d_group = d_group + str_tmp4[:str_tmp4.index('</td>')]
-
-        enterprise_education_courses = ''
-        str_tmp = (str(courses[5])).decode('utf-8')
-        str_tmp1 = str_tmp[str_tmp.index('<td>')+4:]
-        enterprise_education_courses = enterprise_education_courses + str_tmp1[:str_tmp1.index('</td>')]+','
-        str_tmp1 = str_tmp1[str_tmp1.index('<td>')+4:]
-        str_tmp2 = str_tmp1[str_tmp1.index('<td>')+4:]
-        enterprise_education_courses = enterprise_education_courses + str_tmp2[:str_tmp2.index('</td>')]+','
-        str_tmp3 = str_tmp2[str_tmp2.index('<td>')+4:]
-        enterprise_education_courses = enterprise_education_courses + str_tmp3[:str_tmp3.index('</td>')]+','
-        str_tmp4 = str_tmp3[str_tmp3.index('<td>')+4:]
-        enterprise_education_courses = enterprise_education_courses + str_tmp4[:str_tmp4.index('</td>')]'''
         a_group = ''
         str_tmp1 = str(courses[0])[str(courses[0]).index('<td>')+4:]
         a_group = a_group + str_tmp1[:str_tmp1.index('</td>')]+','
@@ -208,9 +150,50 @@ def data_deal(list_origin):
         b_group = b_group + str_tmp3[:str_tmp3.index('</td>')]+','
         str_tmp4 = str_tmp3[str_tmp3.index('<td>')+4:]
         b_group = b_group + str_tmp4[:str_tmp4.index('</td>')]
+        
+        professional_elective_courses = ''
+        '''str_tmp1 = str(courses[2])[str(courses[2]).index('<td>')+4:]
+        professional_elective_courses = professional_elective_courses + str_tmp1[:str_tmp1.index('</td>')]+','
+        str_tmp1 = str_tmp1[str_tmp1.index('<td>')+4:]
+        str_tmp2 = str_tmp1[str_tmp1.index('<td>')+4:]
+        professional_elective_courses = professional_elective_courses + str_tmp2[:str_tmp2.index('</td>')]+','
+        str_tmp3 = str_tmp2[str_tmp2.index('<td>')+4:]
+        professional_elective_courses = professional_elective_courses + str_tmp3[:str_tmp3.index('</td>')]+','
+        str_tmp4 = str_tmp3[str_tmp3.index('<td>')+4:]
+        professional_elective_courses = professional_elective_courses + str_tmp4[:str_tmp4.index('</td>')]'''
 
-        d_group = enterprise_education_courses = professional_elective_courses = ''
+        '''str_tmp1 = str(courses[3])[str(courses[3]).index('<td>')+4:]
+        b_group = b_group + str_tmp1[:str_tmp1.index('</td>')]+','
+        str_tmp1 = str_tmp1[str_tmp1.index('<td>')+4:]
+        str_tmp2 = str_tmp1[str_tmp1.index('<td>')+4:]
+        b_group = b_group + str_tmp2[:str_tmp2.index('</td>')]+','
+        str_tmp3 = str_tmp2[str_tmp2.index('<td>')+4:]
+        b_group = b_group + str_tmp3[:str_tmp3.index('</td>')]+','
+        str_tmp4 = str_tmp3[str_tmp3.index('<td>')+4:]
+        b_group = b_group + str_tmp4[:str_tmp4.index('</td>')]'''
 
+        d_group = ''
+        '''str_tmp1 = str(courses[4])[str(courses[4]).index('<td>')+4:]
+        d_group = d_group + str_tmp1[:str_tmp1.index('</td>')]+','
+        str_tmp1 = str_tmp1[str_tmp1.index('<td>')+4:]
+        str_tmp2 = str_tmp1[str_tmp1.index('<td>')+4:]
+        d_group = d_group + str_tmp2[:str_tmp2.index('</td>')]+','
+        str_tmp3 = str_tmp2[str_tmp2.index('<td>')+4:]
+        d_group = d_group + str_tmp3[:str_tmp3.index('</td>')]+','
+        str_tmp4 = str_tmp3[str_tmp3.index('<td>')+4:]
+        d_group = d_group + str_tmp4[:str_tmp4.index('</td>')]'''
+
+        enterprise_education_courses = ''
+        '''str_tmp = (str(courses[5])).decode('utf-8')
+        str_tmp1 = str_tmp[str_tmp.index('<td>')+4:]
+        enterprise_education_courses = enterprise_education_courses + str_tmp1[:str_tmp1.index('</td>')]+','
+        str_tmp1 = str_tmp1[str_tmp1.index('<td>')+4:]
+        str_tmp2 = str_tmp1[str_tmp1.index('<td>')+4:]
+        enterprise_education_courses = enterprise_education_courses + str_tmp2[:str_tmp2.index('</td>')]+','
+        str_tmp3 = str_tmp2[str_tmp2.index('<td>')+4:]
+        enterprise_education_courses = enterprise_education_courses + str_tmp3[:str_tmp3.index('</td>')]+','
+        str_tmp4 = str_tmp3[str_tmp3.index('<td>')+4:]
+        enterprise_education_courses = enterprise_education_courses + str_tmp4[:str_tmp4.index('</td>')]'''
 
         data_dealing = data.find(attrs={"id":"dgTsk1"})#人文、社科、自然
         courses = data_dealing.findAll(attrs={"class":"dgItemStyle"})
@@ -222,7 +205,7 @@ def data_deal(list_origin):
                 general_courses = general_courses
             else:
                 course_tmp1 = course_tmp[course_tmp.index('<td>')+4:]
-                c_name = course_tmp1[:course_tmp1.index('</td>')]
+                g_name = course_tmp1[:course_tmp1.index('</td>')]
                 course_tmp2 = course_tmp1[course_tmp1.index('<td>')+4:]
                 number_ask = float(course_tmp2[:course_tmp2.index('</td>')])
                 course_tmp3 = course_tmp2[course_tmp2.index('<td>')+4:]
@@ -230,7 +213,13 @@ def data_deal(list_origin):
                 number_get = float(course_tmp3[:course_tmp3.index('</td>')])
                 if number_ask > number_get :
                     number_lack = number_ask - number_get
-                    general_courses =general_courses + '、' + c_name + '缺' + str(number_lack)
+                    if g_name == '自然科学与工程技术':
+                        g_name = '自科'
+                    elif g_name == '人文学科':
+                        g_name = '人文'
+                    elif g_name == '社会科学':
+                        g_name = '社科'
+                    general_courses =general_courses + '、' + g_name + '缺' + str(number_lack)
 
         data_dealing = data.find(attrs={"id":"lbCS1"})#计算机
         number_ask = int(data_dealing.string)
@@ -287,7 +276,7 @@ def data_deal(list_origin):
             one = one + ',' + course[find_n_sub_str(course,'>',11,0)+1:find_n_sub_str(course,'</td>',5,0)]
             one = one + ';'
             others = others + one
-        data_dealing = data.find(attrs={"id":"dgBX1"})#必修的选修课
+        data_dealing = data.find(attrs={"id":"dgBX1"})#必修课
         courses = data_dealing.findAll(attrs={"class":"dgItemStyle"})
         courses += data_dealing.findAll(attrs={"class":"dgAItemStyle"})
         #print courses
@@ -299,7 +288,18 @@ def data_deal(list_origin):
             one = one + ',' + course[find_n_sub_str(course,'>',11,0)+1:find_n_sub_str(course,'</td>',5,0)]
             one = one + ';'
             others = others + one
-
+        data_dealing = data.find(attrs={"id":"dgXX2"})#必修的选修课
+        courses = data_dealing.findAll(attrs={"class":"dgItemStyle"})
+        courses += data_dealing.findAll(attrs={"class":"dgAItemStyle"})
+        #print courses
+        for course in courses:
+            course = str(course)
+            one = ''
+            one = one + course[find_n_sub_str(course,'<td>',1,0)+4:find_n_sub_str(course,'</td>',1,0)]
+            one = one + ',' + course[find_n_sub_str(course,'<td>',2,0)+4:find_n_sub_str(course,'</td>',2,0)]
+            one = one + ',' + course[find_n_sub_str(course,'<td>',6,0)+4:find_n_sub_str(course,'</td>',6,0)]
+            one = one + ';'
+            others = others + one
         data_class = data1(student_ID, name, department, major, grade, graduate_time, student_status,
                      failed_number, center_credits, courses_must_to_take, a_group, b_group, c_group, d_group,
                      professional_elective_courses, enterprise_education_courses, general_courses, others)
@@ -309,10 +309,15 @@ def data_deal(list_origin):
 def driver():
     driver = webdriver.Chrome()
     driver.maximize_window()
-    driver.get("http://i.jwc.sjtu.edu.cn/EduPlate/SEduService/StuStatusManage/GraduationAudit/GraduationAudit.aspx?MID=179702&ID=-1&STR=&2089312352")
+    driver.get("http://i.jwc.sjtu.edu.cn/EduPlate/SEduService/StuStatusManage/GraduationAudit/GraduationAudit.aspx?MID=179702&ID=-1&STR=&642606892")
     driver.save_screenshot('static\\photo.png')
+    element = driver.find_element_by_xpath("//div[@class='input-control captcha-input']/img")
+    left = int(element.location['x'])*1.5
+    top = int(element.location['y'])*1.5
+    right = int(element.location['x'] + element.size['width'])*1.5
+    bottom = int(element.location['y'] + element.size['height'])*1.5
     i = Image.open("static\\photo.png")
-    frame4 = i.crop((1367,485,1515,541))
+    frame4 = i.crop((left, top, right, bottom))
     frame4.save('static\\save.png')
     return driver
 
@@ -321,7 +326,9 @@ def get_data(driver, user, password, icode):
     driver.find_element_by_id("pass").send_keys(password)
     driver.find_element_by_id("captcha").send_keys(icode)
     driver.find_element_by_id("form-input").submit()
-    time.sleep(3)
+    time.sleep(2)
+    if driver.title != '毕业资格审核':
+        return False
     academy = driver.find_element_by_xpath("//*[@id='ddlYX']")
     Select(academy).select_by_value("03000")
     time.sleep(1)
@@ -340,7 +347,11 @@ def get_data(driver, user, password, icode):
     
     time.sleep(1)
     list_of_data = []
-    for i in xrange(number):
+
+    data_dealing = driver.find_element_by_xpath("//*[@id='dgSet']/tbody/tr[2]/td[8]")#毕业时间
+    graduate_time = data_dealing.text
+    driver.set_script_timeout(0)
+    for i in xrange(2): #number
         page = driver.find_element_by_xpath("//*[@id='dgSet']/tbody/tr[%d]/td[13]"%(2+i)).click()
         handles = driver.window_handles
         driver.switch_to_window(handles[1])
@@ -348,7 +359,7 @@ def get_data(driver, user, password, icode):
         list_of_data += [soup_data]
         driver.close()
         driver.switch_to_window(handles[0])
-    data_list = data_deal(list_of_data)
+    data_list = data_deal(list_of_data,graduate_time)
 
     driver.close()
 

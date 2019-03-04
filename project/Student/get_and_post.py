@@ -15,8 +15,6 @@ def add(list1):#向数据库中增添数据
                             center_credits = person.center_credits,
                             courses_must_to_take = person.courses_must_to_take,
                             general_courses = person.general_courses,
-                            one_direction = person.one_direction,
-                            another_direction = person.another_direction,
                             others = person.others)
         student.save()
     return

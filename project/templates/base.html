@@ -13,15 +13,13 @@
         <script src="static/js/jquery.min.js"></script>
         <script src="static/js/bootstrap.min.js"></script>
         <script src="static/js/func.js"></script>
-        <script type="text/javascript">
-            function changeDstSum(){ 
-                var num = document.getElementById('Num').value;
-                if(num >= 0){
-                    alert('修改成功');
-                    x = num;
-                }else{
-                    alert('修改失败');
-                }
+
+        <script src="http://cdnjs.cloudflare.com/ajax/libs/vue/1.0.7/vue.min.js"></script>
+        <script src="https://cdnjs.cloudflare.com/ajax/libs/vue-resource/0.1.17/vue-resource.js"></script>
+        <script src="https://unpkg.com/axios/dist/axios.min.js"></script>
+        <script type="css">
+            [v-cloak]{
+                display: none;
             }
         </script>
 
@@ -77,7 +75,7 @@
 
                 </div>
 
-        <script src="static/js/jquery.nouislider.js"></script>
     </body>
+    <script src="static/js/app.js"></script>
 
 </html>

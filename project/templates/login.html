@@ -18,15 +18,21 @@
                     <p>JAccount统一身份登录</p>
                 </div>
                 <p align="center" style="color:red;font-size:13px;">{{ warning }}</p>
-                <form method="post" action="">
+                <form name="id_form" method="post" action="">
                     {% csrf_token %}
                     <input name="username" type="text" value="用户名" onfocus="this.value=''" onblur="if(this.value==''){this.value='用户名'}">
                     <span id="password_text" onclick="this.style.display='none';document.getElementById('password').style.display='block';document.getElementById('password').focus().select();" >密码</span>
                     <input name="password" type="password" id="password" style="display:none;" onblur="if(this.value==''){document.getElementById('password_text').style.display='block';this.style.display='none'};"/>
                     <input name="icode" type="text" value="验证码" style="width:40%;" onfocus="this.value=''" onblur="if(this.value==''){this.value='验证码'}">
                     <img src="static/save.png" />
-                    <input value="登录" style="width:100%;" type="submit">
+                    <input value="登录" style="width:100%;" type=button onclick="submit_id_form()">
                 </form>
+                <script>
+                    function submit_id_form(){
+                    id_form.submit();
+                    alert('登录时会获取数据，点击 确定 开始获取数据，请耐心等待！');
+                    }
+                </script>
             </div>
         </div>
     </body>
