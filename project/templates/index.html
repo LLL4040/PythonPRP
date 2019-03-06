@@ -34,37 +34,22 @@
 {% endblock %}
 
 {% block showResults %}
-
 <div role="tabpanel" class="tab-pane" id="results">
     <div class="check-div form-inline" align="center">
         <button class="btn btn-yellow btn-sm" type="button" id="show" @click="showResults()">显示</button>
         <button class="btn btn-yellow btn-sm" type="button" id="download">下载</button>
-        <p id="warning" style="color:red;font-size:15px;">{{ warning }}</p>
+        <p id="warning" style="font-size: 14px;color: red">{{ warning }}</p>
     </div>
+
 
     {% verbatim %}
-    <div>
-        <li v-for="x in message">
-          {{x}}
-        </li>
-    </div>
-    {% endverbatim %}
-
     <table class="hovertable" align="center">
-        <tr>
-            <th>序号</th><th>学号</th><th>姓名</th><th>院系</th><th>专业</th><th>年级</th><th>毕业时间</th>
-            <th>学籍状态</th><th>不及格门数</th><th>目前修读核心课程学分</th><th>暂未修读课程</th>
-            <th>修读完某一方向</th><th>其他方向总学分</th><th>人文、社科、自然、计算机、体育、两课、英语</th>
-            <th>软件工程职业素养，SE112</th><th>软件产品设计与用户体验，SE418</th>
-            <th>企业软件质量保证，SE419</th><th>软件知识产权保护，SE420</th><th>企业软件过程与管理，SE422</th>
-            <th>软件工程经济学，SE417</th><th>操作系统，SE315</th><th>工程实践与科技创新，EI901</th>
-        </tr>
-
+        <tr v-html="message[0]"></tr>
         <script type="text/javascript">
             no = 1;
         </script>
-        {% for student in data %}
-        <tr onmouseover="this.style.backgroundColor='#ffff66';" onmouseout="this.style.backgroundColor='#d4e3e5';">
+        <tr onmouseover="this.style.backgroundColor='#ffff66';" onmouseout="this.style.backgroundColor='#d4e3e5';"
+            v-for="student in message[2]">
             <script type="text/javascript">
                 var str = "<td>" + no + "</td>";
                 document.write(str);
@@ -83,19 +68,10 @@
             <td>{{ student.one_direction }}</td>
             <td>{{ student.another_direction }}</td>
             <td>{{ student.general_courses }}</td>
-            <td>{{ student.others.SE112 }}</td>
-            <td>{{ student.others.SE418 }}</td>
-            <td>{{ student.others.SE419 }}</td>
-            <td>{{ student.others.SE420 }}</td>
-            <td>{{ student.others.SE422 }}</td>
-            <td>{{ student.others.SE417 }}</td>
-            <td>{{ student.others.SE315 }}</td>
-            <td>{{ student.others.EI901 }}</td>
+            <td v-for="ext in message[1]">{{ student.others[ext] }}</td>
         </tr>
-        {% endfor %}
-
-
     </table>
+    {% endverbatim %}
 
 </div>
 {% endblock %}
@@ -140,15 +116,15 @@
                     </tbody>
                 </table>
                 
-                <div id="add-extra">
+                <div id="add-extra" align="center">
                     <legend>添加课程</legend>
                     <div class="form-group">
                         <label>课程代码</label>
-                        <input type="text" class='form-control' v-model="ext.id">
+                        <input type="text" class='form-control' v-model="ext.id" style="width:50%;">
                         <label>课程名称</label>
-                        <input type="text" class='form-control' v-model="ext.name">
+                        <input type="text" class='form-control' v-model="ext.name" style="width:50%;">
                     </div>
-                    <button class="btn btn-primary btn-block" @click="addExt()">添加</button>
+                    <button class="btn btn-primary btn-block" @click="addExt()" style="width:50%;">添加</button>
                 </div>
             </div>
         </div>

@@ -1,6 +1,5 @@
 #-*- coding:utf-8 -*-
 from spider import *
-from Student import get_and_post
 from download import *
 
 
@@ -15,6 +14,9 @@ def change(one,code_list):
         for j in tmplist1:
             if j in i[0]:
                 if 'P' in i[2]:
+                    tmp[j] = u'通过'
+                    break
+                if 'A' in i[2] or 'B' in i[2] or 'C' in i[2] or 'D' in i[2]:
                     tmp[j] = u'通过'
                     break
                 if 'F' in i[2]:
@@ -33,7 +35,10 @@ def change(one,code_list):
 
 def data_deal(list1,username):#list1是从spider.py接受到的原始数据
     list2 = []
+    #默认配置
     code_list = ['SE112','SE418','SE419','SE420','SE422','SE417','SE315','EI901']
+    name_list = ["软件工程职业素养， SE112","软件产品设计与用户体验，SE418","企业软件质量保证，SE419","软件知识产权保护，SE420",
+                "企业软件过程与管理，SE422","软件工程经济学，SE417","操作系统，SE315","工程实践与科技创新，EI901"]
 
     if list1 != []:
         for person in list1:
@@ -42,7 +47,7 @@ def data_deal(list1,username):#list1是从spider.py接受到的原始数据
                             person.courses_must_to_take, person.a_group, person.b_group, person.c_group, person.d_group,
                             person.professional_elective_courses, person.enterprise_education_courses,
                             person.general_courses, person.others, '无', '无')
-            #student.change()
+            
             change(student, code_list)
 
             #处理one_direction, another_direction两项
@@ -84,7 +89,7 @@ def data_deal(list1,username):#list1是从spider.py接受到的原始数据
             + ',,' + person.general_courses + ',,' + person.others
         f.write(one_person+'\n')
     f.close()
-    download(list2)
+    download(username,list2,code_list,name_list)
     return list2
 
 
@@ -137,5 +142,5 @@ def get_data_from_file(username,code_list,name_list):#获取数据
                 student.another_direction = int(a[2])+int(a[3])+int(c[2])+int(c[3])+int(b[2])+int(b[3])
 
             list2.append(student)
-    download(list2,code_list,name_list)
+    download(username,list2,code_list,name_list)
     return list2

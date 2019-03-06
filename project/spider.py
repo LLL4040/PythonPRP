@@ -40,32 +40,7 @@ class data2(data1):#返回给manager的数据实例
                  failed_number,center_credits,courses_must_to_take,a_group,b_group,c_group,d_group,
                  professional_elective_courses,enterprise_education_courses,general_courses,others)#原始数据初始化
         self.one_direction = one_direction#修读完某一方向
-        self.another_direction = another_direction#再修读其他方向x门（x可设置）
-    def change(self):
-        se112 = se418 = se419 = se420 = se422 = se417 = se315 = ei901 = '未选课'
-        tmp = {'SE112':se112, 'SE418':se418, 'SE419':se419, 'SE420':se420, 'SE422':se422, 'SE417':se417, 'SE315':se315, 'EI901':ei901}
-        tmplist1 = ['SE112', 'SE418', 'SE419', 'SE420', 'SE422', 'SE417', 'SE315', 'EI901']
-        tmplist2 = self.others.split(';')
-        for i in tmplist2:
-            i = i.split(',')
-            for j in tmplist1:
-                if j in i[0]:
-                    if 'P' in i[2]:
-                        tmp[j] = u'通过'
-                        break
-                    if 'F' in i[2]:
-                        tmp[j] = u'未通过'
-                        break
-                    if '△' in i[2]:
-                        if tmp[j] == u'通过':
-                            break
-                        tmp[j] = u'未通过'
-                        break
-                    if int(float(i[2])) >= 60:
-                        tmp[j] = u'通过'
-                    else:
-                        tmp[j] = u'未通过'
-        self.others = tmp
+        self.another_direction = another_direction#其他方向学分
 
 def data_deal(list_origin,graduate_time):
     list_dealing = []
@@ -267,7 +242,7 @@ def data_deal(list_origin,graduate_time):
         courses = data_dealing.findAll(attrs={"class":"dgItemStyle"})
         courses += data_dealing.findAll(attrs={"class":"dgAItemStyle"})
         others = ''
-        #print courses
+        
         for course in courses:
             course = str(course)
             one = ''
@@ -279,7 +254,7 @@ def data_deal(list_origin,graduate_time):
         data_dealing = data.find(attrs={"id":"dgBX1"})#必修课
         courses = data_dealing.findAll(attrs={"class":"dgItemStyle"})
         courses += data_dealing.findAll(attrs={"class":"dgAItemStyle"})
-        #print courses
+        
         for course in courses:
             course = str(course)
             one = ''
@@ -291,7 +266,7 @@ def data_deal(list_origin,graduate_time):
         data_dealing = data.find(attrs={"id":"dgXX2"})#必修的选修课
         courses = data_dealing.findAll(attrs={"class":"dgItemStyle"})
         courses += data_dealing.findAll(attrs={"class":"dgAItemStyle"})
-        #print courses
+        
         for course in courses:
             course = str(course)
             one = ''
@@ -326,7 +301,7 @@ def get_data(driver, user, password, icode):
     driver.find_element_by_id("pass").send_keys(password)
     driver.find_element_by_id("captcha").send_keys(icode)
     driver.find_element_by_id("form-input").submit()
-    time.sleep(2)
+    time.sleep(1)
     if driver.title != '毕业资格审核':
         return False
     academy = driver.find_element_by_xpath("//*[@id='ddlYX']")
@@ -345,13 +320,12 @@ def get_data(driver, user, password, icode):
     list2 = driver.find_elements_by_class_name("dgAItemStyle")
     number = len(list1)+len(list2)
     
-    time.sleep(1)
     list_of_data = []
 
     data_dealing = driver.find_element_by_xpath("//*[@id='dgSet']/tbody/tr[2]/td[8]")#毕业时间
     graduate_time = data_dealing.text
     driver.set_script_timeout(0)
-    for i in xrange(2): #number
+    for i in xrange(number): #number
         page = driver.find_element_by_xpath("//*[@id='dgSet']/tbody/tr[%d]/td[13]"%(2+i)).click()
         handles = driver.window_handles
         driver.switch_to_window(handles[1])
@@ -363,11 +337,4 @@ def get_data(driver, user, password, icode):
 
     driver.close()
 
-    return data_list
-
-def get_soup_data():
-    with open('GradList2013.aspx','r') as foo_file :
-        soup_data = BeautifulSoup(foo_file, "html.parser")
-    data_list = [soup_data]
-    data_list = data_deal(data_list)
     return data_list

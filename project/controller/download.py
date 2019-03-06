@@ -1,8 +1,9 @@
 #-*- coding:utf-8 -*-
 import xlsxwriter
-def download(data_list,code_list,name_list):#通过数据对本地的Excel文件进行更改
+def download(un,data_list,code_list,name_list):#通过数据对本地的Excel文件进行更改
     #创建一个Excel文件
-    workbook = xlsxwriter.Workbook('file.xlsx')
+    excelname = un + 'file.xlsx'
+    workbook = xlsxwriter.Workbook(excelname)
     #创建一个工作表sheet对象
     worksheet = workbook.add_worksheet()
     #创建数据

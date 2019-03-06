@@ -1,17 +1,3 @@
-var vm = new Vue({
-    el:"#user",
-    data:{
-    username:'',
-  },
-  mounted () {
-    this.init();
-  },
-  methods:{
-    init() {
-      this.username = this.$refs.username.innerHTML;
-    }
-  }
-});
 new Vue({
     el:"#results",
     data:{
@@ -22,12 +8,11 @@ new Vue({
             var self = this;
             axios.get('/extra')
             .then(function (response) {
+                self.message = [];
                 for(let item of response.data) {
                     self.message.push(item);
                 }
-                    self.$forceUpdate();
-                    console.log(response.data);
-                })
+            })
         }
       }
 });
@@ -35,7 +20,7 @@ new Vue({
     el:"#extra",
     data:{
         ext:{
-            id:0,
+            id:'',
             name:'',
         },
         exts: [{
@@ -68,14 +53,11 @@ new Vue({
         addExt:function(){
             this.exts.push(this.ext);
             this.ext = {
-                        id:0,
+                        id:'',
                         name:'',
                     };
-            var un = JSON.stringify([{'username': vm.username}]);
-            var j = JSON.stringify(this.exts);
-            var list = j +','+ un;
             axios.post('/extra', 
-                        list
+                        JSON.stringify(this.exts)
                       )
                       .then(function (response) {
                         console.log(response);
@@ -86,11 +68,8 @@ new Vue({
                     return item.id == index;
                 });
                 this.exts.splice(index,1);
-            var un = JSON.stringify([{'username': vm.username}]);
-            var j = JSON.stringify(this.exts);
-            var list = j +','+ un;
             axios.post('/extra', 
-                        list
+                        JSON.stringify(this.exts)
                       )
                       .then(function (response) {
                         console.log(response);
